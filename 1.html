@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <script>
+      function displayRandomImage() {
+        fetch("https://www.loc.gov/photos/?fo=json")
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.results) {
+              const images = data.results.filter((item) => item.image_url);
+              if (images.length > 0) {
+                const randomImage =
+                  images[Math.floor(Math.random() * images.length)];
+                document.getElementById("image").src = randomImage.image_url;
+              } else {
+                console.error("No images found in the API response");
+              }
+            } else {
+              console.error("No 'results' property found in the API response");
+            }
+          });
+      }
+
+      window.onload = function () {
+        displayRandomImage();
+        setInterval(displayRandomImage, 5000);
+      };
+    </script>
+  </head>
+  <body>
+    <img id="image" />
+  </body>
+</html>
