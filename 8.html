@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <style>
+      img {
+        
+        height: 100vh;
+        object-fit: cover;
+        transition: opacity 3s ease-in-out;
+      }
+    </style>
+    <script>
+      let currentImageElement;
+      let nextImageElement;
+
+      function displayRandomImage() {
+        fetch("https://www.loc.gov/photos/?fo=json")
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.results) {
+              const images = data.results.filter((item) => item.image_url);
+              if (images.length > 0) {
+                const randomImage =
+                  images[Math.floor(Math.random() * images.length)];
+                nextImageElement = document.createElement("img");
+                nextImageElement.src = randomImage.image_url[1];
+                nextImageElement.style.position = "absolute";
+                nextImageElement.style.top = 0;
+                nextImageElement.style.left = 0;
+                nextImageElement.style.width = "100%";
+                nextImageElement.style.height = "100%";
+                nextImageElement.style.objectFit = "cover";
+                nextImageElement.style.opacity = 0;
+                document.body.appendChild(nextImageElement);
+                setTimeout(() => {
+                  if (currentImageElement) {
+                    currentImageElement.style.opacity = 0;
+                  }
+                  nextImageElement.style.opacity = 1;
+                  currentImageElement = nextImageElement;
+                }, 500);
+              } else {
+                console.error("No images found in the API response");
+              }
+            } else {
+              console.error("No 'results' property found in the API response");
+            }
+          });
+      }
+
+      window.onload = function () {
+        displayRandomImage();
+        setInterval(displayRandomImage, 7000);
+      };
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
