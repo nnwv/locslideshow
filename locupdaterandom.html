@@ -1,0 +1,18 @@
+<html>
+  <head>
+    <script>
+      function displayImage() {
+        fetch('https://www.loc.gov/collections/fsa-owi-black-and-white-negatives/data?fo=json')
+          .then(response => response.json())
+          .then(data => {
+            const imageUrls = data.items.filter(item => item.image).map(item => item.image.full);
+            const randomIndex = Math.floor(Math.random() * imageUrls.length);
+            const imageUrl = imageUrls[randomIndex];
+            const imageContainer = document.getElementById('imageContainer');
+            const imageElement = document.createElement('img');
+            imageElement.addEventListener('load', () => {
+              imageContainer.innerHTML = '';
+              imageContainer.appendChild(imageElement);
+            });
+            imageElement.addEventListener('error', (error) => {
+              console.error('Failed to load
