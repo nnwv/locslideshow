@@ -1,0 +1,70 @@
+
+<html>
+  <head>
+    <title>Slideshow</title>
+    
+    <style>
+      .loader {
+        position: absolute;
+        display: none;
+      }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="loader">
+      <img src="images/spinner.svg">
+    </div>
+    <img id="image">
+  </body>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="js/lightbox.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      let imgArrays = []
+
+      function displayRandomImage() {
+        fetch("https://www.loc.gov/photos/?fo=json")
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.results) {
+              const images = data.results.filter((item) => item.image_url);
+              if (images.length > 0) {
+                let randomImage = images[Math.floor(Math.random() * images.length)]
+                while(imgArrays.includes(randomImage.image_url)) {
+                  randomImage = images[Math.floor(Math.random() * images.length)]
+                }
+                imgArrays.push(randomImage.image_url)
+                $('#image').attr("src", randomImage.image_url)
+                $(".loader").show()
+                // document.getElementById("image").src = randomImage.image_url;
+              } else {
+                console.error("No images found in the API response");
+              }
+            } else {
+              console.error("No 'results' property found in the API response");
+            }
+          });
+      }
+
+      $("#image").on("load", function() {
+        $(".loader").hide()
+        $("#image").show()
+      })
+
+      $("#image").on("error", function() {
+        $("#image").hide()
+        $(".loader").show()
+      })
+
+      window.onload = function () {
+        displayRandomImage();
+        setInterval(displayRandomImage, 5000);
+      };
+    })
+  </script>
+</html>
