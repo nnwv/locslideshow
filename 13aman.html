@@ -1,8 +1,7 @@
-
 <html>
   <head>
     <title>Slideshow</title>
-    
+
     <style>
       .loader {
         position: absolute;
@@ -19,12 +18,15 @@
     <div class="loader">
       <img src="images/spinner.svg">
     </div>
+    <img id="image_2">
     <img id="image">
   </body>
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="js/lightbox.min.js"></script>
   <script>
     $(document).ready(function() {
+      displayRandomImage();
+      setInterval(displayRandomImage, 5000);
       let imgArrays = []
 
       function displayRandomImage() {
@@ -35,11 +37,16 @@
               const images = data.results.filter((item) => item.image_url);
               if (images.length > 0) {
                 let randomImage = images[Math.floor(Math.random() * images.length)]
+                let randomImage2 = images[Math.floor(Math.random() * images.length)]
                 while(imgArrays.includes(randomImage.image_url)) {
                   randomImage = images[Math.floor(Math.random() * images.length)]
                 }
+                while(imgArrays.includes(randomImage2.image_url)) {
+                  randomImage2 = images[Math.floor(Math.random() * images.length)]
+                }
                 imgArrays.push(randomImage.image_url)
                 $('#image').attr("src", randomImage.image_url)
+                $('#image_2').attr("src", randomImage2.image_url)
                 $(".loader").show()
                 // document.getElementById("image").src = randomImage.image_url;
               } else {
@@ -60,11 +67,6 @@
         $("#image").hide()
         $(".loader").show()
       })
-
-      window.onload = function () {
-        displayRandomImage();
-        setInterval(displayRandomImage, 5000);
-      };
     })
   </script>
 </html>
